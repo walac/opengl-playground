@@ -38,7 +38,7 @@ void init(GLFWwindow *window) {
 template<typename Clock, typename Duration> void
 display(GLFWwindow *window, std::chrono::time_point<Clock, Duration> currentTime) {
     GL_CK_V(glUseProgram(renderingProgram));
-    GL_CK_V(glDrawArrays(GL_POINTS, 0, 1));
+    GL_CK_V(glDrawArrays(GL_TRIANGLES, 0, 3));
 }
 
 int main(void) {

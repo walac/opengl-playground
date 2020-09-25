@@ -34,12 +34,25 @@ GLFWwindow *initGl(int width, int height, std::string_view title) {
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, GL_VERSION_MAJOR);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, GL_VERSION_MINOR);
-#ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
+
+    if (__APPLE__) {
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    }
+
     auto window = glfwCreateWindow(width, height, title.data(), NULL, NULL);
+
+    int actualScreenWidth = 0, actualScreenHeight = 0;
+    if (__APPLE__)
+        glfwGetFramebufferSize(window, &actualScreenWidth, &actualScreenHeight);
+
     glfwMakeContextCurrent(window);
+
+    if (__APPLE__) {
+        glViewport(0,0,actualScreenWidth,actualScreenHeight);
+        glewExperimental = GL_TRUE;
+    }
+
     if (auto err = glewInit(); err != GLEW_OK) {
         std::cerr << "glewInit failed\n";
         glfwDestroyWindow(window);

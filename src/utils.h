@@ -1,8 +1,13 @@
 #pragma once
 
 #include <string>
-#include <OpenGL/gl.h>
 #include <GLFW/glfw3.h>
+#if __APPLE__
+#include <OpenGL/gl3.h>
+#include <OpenGL/gl3ext.h>
+#else
+#include <OpenGL/gl.h>
+#endif
 #include <string_view>
 #include <algorithm>
 #include <type_traits>
@@ -42,15 +47,3 @@ T checkOpengl(T retVal, std::string_view call, std::string_view file, size_t lin
         call; \
         checkOpengl(#call, __FILE__, __LINE__); \
     } while (0)
-
-#ifdef __APPLE__
-#ifdef glGenVertexArrays
-#undef glGenVertexArrays
-#endif
-#define glGenVertexArrays glGenVertexArraysAPPLE
-
-#ifdef glBindVertexArray
-#undef glBindVertexArray
-#endif
-#define glBindVertexArray glBindVertexArrayAPPLE
-#endif
