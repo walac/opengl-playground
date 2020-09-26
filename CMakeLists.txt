@@ -8,9 +8,9 @@ include(cmake/Sanitizers.cmake)
 
 include(CheckCXXCompilerFlag)
 
-function(check_compile_option option)
-    check_cxx_compiler_flag(${option} HAS_OPT)
-    if (HAS_OPT)
+function(check_compile_option option var)
+    check_cxx_compiler_flag(${option} ${var})
+    if (${var})
         add_compile_options(${option})
     endif()
 endfunction()
@@ -20,7 +20,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_BUILD_TYPE Debug)
 
-check_compile_option(-Wno-deprecated)
+check_compile_option(-Wno-deprecated HAS_NO_DEPRECATED)
 
 # After digging into the glew-targets.cmake file for macOS I discover
 # it is the cause for the error
