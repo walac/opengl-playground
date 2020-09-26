@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 3.18.0)
 
+project(OpenglPlayground CXX)
+include(cmake/StandardProjectSettings.cmake)
+include(cmake/PreventInSourceBuilds.cmake)
+include(cmake/StaticAnalyzers.cmake)
+include(cmake/Sanitizers.cmake)
+
 include(CheckCXXCompilerFlag)
 
 function(check_compile_option option)
@@ -10,8 +16,6 @@ function(check_compile_option option)
 endfunction()
 
 set(CMAKE_CXX_STANDARD 17)
-
-project(OpenglPlayground)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_BUILD_TYPE Debug)
