@@ -1,12 +1,13 @@
 #pragma once
 
 #include <string>
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #if __APPLE__
 #include <OpenGL/gl3.h>
 #include <OpenGL/gl3ext.h>
 #else
-#include <OpenGL/gl.h>
+#include <GL/gl.h>
 #endif
 #include <string_view>
 #include <algorithm>
@@ -16,10 +17,10 @@ namespace detail
 {
 inline std::string_view basename(std::string_view s) noexcept {
     const auto pos = s.find_last_of("/\\");
-    if (pos == std::string_view::npos)
+    if (pos == std::string_view::npos) {
         return s;
-    else
-        return s.substr(pos + 1);
+    }
+    return s.substr(pos + 1);
 }
 }
 
@@ -32,8 +33,9 @@ GLuint createProgram(std::string_view vertexSourceFile, std::string_view fragmen
 
 inline void
 checkOpengl(std::string_view call, std::string_view file, size_t line) {
-    if (auto err = glGetError(); err != 0)
+    if (auto err = glGetError(); err != 0) {
         reportOpenglErrorAndQuit(call, err, file, line);
+    }
 }
 
 template<typename T>

@@ -4,7 +4,6 @@
 #include <iostream>
 #include <system_error>
 #include <vector>
-#include <GL/glew.h>
 #include "utils.h"
 
 constexpr int GL_VERSION_MAJOR = 4;
@@ -25,7 +24,7 @@ void glfwErrorCallback(int err, const char *msg) {
 }
 
 GLFWwindow *initGl(int width, int height, std::string_view title) {
-    if (!glfwInit()) {
+    if (glfwInit() == 0) {
         std::cerr << "glfwInit failed\n";
         return nullptr;
     }
@@ -35,23 +34,24 @@ GLFWwindow *initGl(int width, int height, std::string_view title) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, GL_VERSION_MAJOR);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, GL_VERSION_MINOR);
 
-    if (__APPLE__) {
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    }
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
 
-    auto window = glfwCreateWindow(width, height, title.data(), NULL, NULL);
+    auto *window = glfwCreateWindow(width, height, title.data(), NULL, NULL);
 
+#ifdef __APPLE__
     int actualScreenWidth = 0, actualScreenHeight = 0;
-    if (__APPLE__)
-        glfwGetFramebufferSize(window, &actualScreenWidth, &actualScreenHeight);
+    glfwGetFramebufferSize(window, &actualScreenWidth, &actualScreenHeight);
+#endif
 
     glfwMakeContextCurrent(window);
 
-    if (__APPLE__) {
-        glViewport(0,0,actualScreenWidth,actualScreenHeight);
-        glewExperimental = GL_TRUE;
-    }
+#ifdef __APPLE__
+    glViewport(0,0, actualScreenWidth, actualScreenHeight);
+    glewExperimental = GL_TRUE;
+#endif
 
     if (auto err = glewInit(); err != GLEW_OK) {
         std::cerr << "glewInit failed\n";
@@ -65,13 +65,14 @@ GLFWwindow *initGl(int width, int height, std::string_view title) {
 }
 
 std::string readFile(std::string_view filename) {
-    std::ifstream f(filename);
-    if (!f.is_open())
+    std::ifstream f(filename.data());
+    if (!f.is_open()) {
         throw std::system_error(
             0,
             std::iostream_category(),
             "Could not open file " + std::string(filename)
         );
+    }
 
 
     std::stringstream ss;
