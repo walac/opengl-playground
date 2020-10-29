@@ -1,4 +1,5 @@
 #include "utils.h"
+#include <glm/fwd.hpp>
 #include <iostream>
 #include <cmath>
 #include <array>
@@ -10,8 +11,8 @@ namespace {
 constexpr auto numVAOs = 1;
 constexpr auto numVBOs = 1;
 
-float cameraX, cameraY, cameraZ;
-float cubeLocX, cubeLocY, cubeLocZ;
+glm::vec3 camera;
+glm::vec3 cubeLoc;
 GLuint renderingProgram;
 std::array<GLuint, numVAOs> vao;
 std::array<GLuint, numVBOs> vbo;
@@ -76,8 +77,8 @@ void setupVertices() {
 
 void init() {
     renderingProgram = createProgram("ch4.1-vert.glsl", "ch4.1-frag.glsl");
-    cameraX = 0; cameraY = 0; cameraZ = 8.0F;
-    cubeLocX = 0; cubeLocY = -2.0F; cubeLocZ = 0;
+    camera = {0.0f, 0.0f, 8.0f};
+    cubeLoc = {0.0f, -2.0f, 0.0f};
     setupVertices();
 }
 
@@ -92,8 +93,8 @@ void display(GLFWwindow *window) {
     aspect = static_cast<float>(width) / static_cast<float>(height);
     pMat = glm::perspective(1.0472F /* 60 degrees */, aspect, 0.1F, 1000.0F);
 
-    vMat = glm::translate(glm::mat4(1.0F), glm::vec3(-cameraX, -cameraY, -cameraZ));
-    mMat = glm::translate(glm::mat4(1.0F), glm::vec3(cubeLocX, cubeLocY, cubeLocZ));
+    vMat = glm::translate(glm::mat4(1.0F), -camera);
+    mMat = glm::translate(glm::mat4(1.0F), cubeLoc);
     mvMat = vMat * mMat;
 
     GL_CK_V(glUniformMatrix4fv(mvLoc, 1, GL_FALSE, glm::value_ptr(mvMat)));
