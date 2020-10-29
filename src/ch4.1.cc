@@ -112,7 +112,7 @@ void display(GLFWwindow *window) {
 int main() {
     constexpr auto WIDTH = 600;
     constexpr auto HEIGHT = 600;
-    auto *window = initGl(WIDTH, HEIGHT, "Chapter 4 = program 1");
+    auto window = initGl(WIDTH, HEIGHT, "Chapter 4 = program 1");
     init();
 
     while (0 == glfwWindowShouldClose(window)) {
