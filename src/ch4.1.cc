@@ -60,6 +60,8 @@ constexpr std::array parallelogramVertexPositions{
     -1.0F,  1.0F, -1.0F,  1.0F,  1.0F, -1.0F,  1.0F,  1.0F,  1.0F,
      1.0F,  1.0F,  1.0F, -1.0F,  1.0F,  1.0F, -1.0F,  1.0F, -1.0F,
 };
+
+constexpr auto vertexPositions = parallelogramVertexPositions;
 }
 
 void setupVertices() {
@@ -69,7 +71,7 @@ void setupVertices() {
     GL_CK_V(glGenBuffers(numVBOs, vbo.data()));
 
     GL_CK_V(glBindBuffer(GL_ARRAY_BUFFER, vbo[0]));
-    GL_CK_V(glBufferData(GL_ARRAY_BUFFER, parallelogramVertexPositions.size() * sizeof(parallelogramVertexPositions[0]), parallelogramVertexPositions.data(), GL_STATIC_DRAW));
+    GL_CK_V(glBufferData(GL_ARRAY_BUFFER, vertexPositions.size() * sizeof(vertexPositions[0]), vertexPositions.data(), GL_STATIC_DRAW));
 }
 
 void init() {
@@ -103,7 +105,7 @@ void display(GLFWwindow *window) {
 
     GL_CK_V(glEnable(GL_DEPTH_TEST));
     GL_CK_V(glDepthFunc(GL_LEQUAL));
-    GL_CK_V(glDrawArrays(GL_TRIANGLES, 0, parallelogramVertexPositions.size()/3));
+    GL_CK_V(glDrawArrays(GL_TRIANGLES, 0, vertexPositions.size()/3));
 }
 
 int main() {
