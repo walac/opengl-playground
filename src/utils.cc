@@ -59,6 +59,8 @@ GLFWwindow *initGl(int width, int height, std::string_view title) {
         return nullptr;
     }
 
+    glfwSwapInterval(1);
+
     return window;
 }
 
@@ -100,4 +102,26 @@ void checkProgram(GLuint program) {
         GL_CK_V(glGetProgramInfoLog(program, len, nullptr, &buffer[0]));
         std::cerr << &buffer[0] << '\n';
     }
+}
+
+GLuint createProgram(std::string_view vertexSourceFile, std::string_view fragmentSourceFile) {
+    const auto vertexSource = readFile(vertexSourceFile);
+    const auto fragmentSource = readFile(fragmentSourceFile);
+    const auto *vShaderStr = vertexSource.c_str();
+    const auto *fShaderStr = fragmentSource.c_str();
+    auto vShader = GL_CK(glCreateShader(GL_VERTEX_SHADER));
+    auto fShader = GL_CK(glCreateShader(GL_FRAGMENT_SHADER));
+    GL_CK_V(glShaderSource(vShader, 1, &vShaderStr, nullptr));
+    GL_CK_V(glShaderSource(fShader, 1, &fShaderStr, nullptr));
+    GL_CK_V(glCompileShader(vShader));
+    checkShaderCompile(vShader);
+    GL_CK_V(glCompileShader(fShader));
+    checkShaderCompile(fShader);
+
+    auto program = GL_CK(glCreateProgram());
+    GL_CK_V(glAttachShader(program, vShader));
+    GL_CK_V(glAttachShader(program, fShader));
+    GL_CK_V(glLinkProgram(program));
+    checkProgram(program);
+    return program;
 }
