@@ -49,7 +49,7 @@ void setupVertices() {
     GL_CK_V(glGenBuffers(numVBOs, vbo.data()));
 
     GL_CK_V(glBindBuffer(GL_ARRAY_BUFFER, vbo[0]));
-    GL_CK_V(glBufferData(GL_ARRAY_BUFFER, vertexPositions.size(), vertexPositions.data(), GL_STATIC_DRAW));
+    GL_CK_V(glBufferData(GL_ARRAY_BUFFER, vertexPositions.size() * sizeof(vertexPositions[0]), vertexPositions.data(), GL_STATIC_DRAW));
 }
 
 void init() {
