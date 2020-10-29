@@ -13,6 +13,7 @@ constexpr auto numVBOs = 1;
 
 glm::vec3 camera;
 glm::vec3 cubeLoc;
+glm::vec4 U, V, N;
 GLuint renderingProgram;
 std::array<GLuint, numVAOs> vao;
 std::array<GLuint, numVBOs> vbo;
@@ -79,6 +80,9 @@ void init() {
     renderingProgram = createProgram("ch4.1-vert.glsl", "ch4.1-frag.glsl");
     camera = {0.0f, 0.0f, 8.0f};
     cubeLoc = {0.0f, -2.0f, 0.0f};
+    U = {1.0f, 0.0f, 0.0f, 0.0f};
+    V = {0.0f, 1.0f, 0.0f, 0.0f};
+    N = {0.0f, 0.0f, 1.0f, 0.0f};
     setupVertices();
 }
 
@@ -93,7 +97,8 @@ void display(GLFWwindow *window) {
     aspect = static_cast<float>(width) / static_cast<float>(height);
     pMat = glm::perspective(1.0472F /* 60 degrees */, aspect, 0.1F, 1000.0F);
 
-    vMat = glm::translate(glm::mat4(1.0F), -camera);
+    //vMat = glm::translate(glm::mat4(1.0F), -camera);
+    vMat = glm::mat4{U, V, N, {0.0f, 0.0f, 0.0f, 1.0f}} * glm::translate(glm::mat4(1.0f), -camera);
     mMat = glm::translate(glm::mat4(1.0F), cubeLoc);
     mvMat = vMat * mMat;
 
