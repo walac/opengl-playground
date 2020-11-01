@@ -67,3 +67,6 @@ file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/ch4.2-vert.glsl DESTINATION ${CMAKE_CU
 
 add_executable(ch4.3 src/utils.cc src/ch4.3.cc)
 target_link_libraries(ch4.3 PRIVATE ${LIBS})
+
+add_executable(ch4.4 src/utils.cc src/ch4.4.cc)
+target_link_libraries(ch4.4 PRIVATE ${LIBS})
