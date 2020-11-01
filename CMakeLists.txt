@@ -58,3 +58,7 @@ add_executable(ch4.1 src/utils.cc src/ch4.1.cc)
 target_link_libraries(ch4.1 PRIVATE ${LIBS})
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/ch4.1-vert.glsl DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/ch4.1-frag.glsl DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+add_executable(ch4.2 src/utils.cc src/ch4.2.cc)
+target_link_libraries(ch4.2 PRIVATE ${LIBS})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/ch4.2-vert.glsl DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
