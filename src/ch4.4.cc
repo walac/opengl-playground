@@ -15,7 +15,7 @@ glm::vec3 cubeLoc, pyrLoc;
 glm::vec4 U, V, N;
 GLuint renderingProgram;
 std::array<GLuint, 1> vao;
-std::array<GLuint, 3> vbo;
+std::array<GLuint, 4> vbo;
 
 constexpr std::array cubeVertexPositions{
     -1.0F,  1.0F, -1.0F, -1.0F, -1.0F, -1.0F,  1.0F, -1.0F, -1.0F,
@@ -83,11 +83,14 @@ void setupVertices() {
 
     GL_CK_V(glBindBuffer(GL_ARRAY_BUFFER, vbo[2]));
     GL_CK_V(glBufferData(GL_ARRAY_BUFFER, cubeVertexPositions.size() * sizeof(cubeVertexPositions[0]), cubeVertexPositions.data(), GL_STATIC_DRAW));
+
+    GL_CK_V(glBindBuffer(GL_ARRAY_BUFFER, vbo[3]));
+    GL_CK_V(glBufferData(GL_ARRAY_BUFFER, trapezoidVertexPositions.size() * sizeof(trapezoidVertexPositions[0]), trapezoidVertexPositions.data(), GL_STATIC_DRAW));
 }
 
 void init() {
     renderingProgram = createProgram("ch4.1-vert.glsl", "ch4.1-frag.glsl");
-    camera = {0.0f, 0.0f, 12.0f};
+    camera = {0.0f, 0.0f, 24.0f};
     cubeLoc = {0.0f, -2.0f, 0.0f};
     pyrLoc = {2.0f, 2.0f, 0.0f};
     U = {1.0f, 0.0f, 0.0f, 0.0f};
@@ -134,10 +137,10 @@ void display(GLFWwindow *window) {
     stk.push(stk.top());
     stk.top() *= glm::translate(
         glm::mat4(1.0f),
-        glm::vec3(std::sin(currentTime) * 4.0f, 0.0f, cos(currentTime) * 4.0f)
+        glm::vec3(std::sin(currentTime) * 8.0f, 0.0f, cos(currentTime) * 8.0f)
     );
     stk.push(stk.top());
-    stk.top() *= glm::rotate(glm::mat4(1.0f), currentTime, glm::vec3(0.0f, 1.0f, 0.0f));
+    stk.top() *= glm::rotate(glm::mat4(1.0f), 1.5f*currentTime, glm::vec3(0.0f, 1.0f, 0.0f));
     GL_CK_V(glUniformMatrix4fv(mvLoc, 1, GL_FALSE, glm::value_ptr(stk.top())));
     GL_CK_V(glBindBuffer(GL_ARRAY_BUFFER, vbo[1]));
     GL_CK_V(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr));
@@ -155,12 +158,28 @@ void display(GLFWwindow *window) {
             std::cos(currentTime) * 2.0f
         )
     );
+    stk.top() *= glm::rotate(glm::mat4(1.0f), currentTime, glm::vec3(0.0f, 0.0f, 1.0f));
     stk.top() *= glm::scale(glm::mat4(1.0f), glm::vec3(0.25f, 0.25f, 0.25f));
     GL_CK_V(glUniformMatrix4fv(mvLoc, 1, GL_FALSE, glm::value_ptr(stk.top())));
     GL_CK_V(glBindBuffer(GL_ARRAY_BUFFER, vbo[2]));
     GL_CK_V(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr));
     GL_CK_V(glEnableVertexAttribArray(0));
     GL_CK_V(glDrawArrays(GL_TRIANGLES, 0, cubeVertexPositions.size()/3));
+
+    // Second planet
+    stk.pop(); stk.pop(); stk.pop();
+    stk.push(stk.top());
+    stk.top() *= glm::translate(
+        glm::mat4(1.0f),
+        glm::vec3(std::sin(1.5f * currentTime) * 3.0f, 0.0f, std::cos(1.5f * currentTime) * 3.0f)
+    );
+    stk.top() *= glm::rotate(glm::mat4(1.0f), 2.0f * currentTime, glm::vec3(0.0f, 1.0f, 0.0f));
+    stk.top() *= glm::scale(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.5f));
+    GL_CK_V(glUniformMatrix4fv(mvLoc, 1, GL_FALSE, glm::value_ptr(stk.top())));
+    GL_CK_V(glBindBuffer(GL_ARRAY_BUFFER, vbo[3]));
+    GL_CK_V(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr));
+    GL_CK_V(glEnableVertexAttribArray(0));
+    GL_CK_V(glDrawArrays(GL_TRIANGLES, 0, trapezoidVertexPositions.size()/3));
 }
 
 int main() {
