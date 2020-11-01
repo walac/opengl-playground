@@ -60,7 +60,7 @@ constexpr std::array parallelogramVertexPositions{
      0.75F,  1.0F,  0.75F, -0.75F,  1.0F,  0.75F, -0.75F,  1.0F, -0.75F,
 };
 
-constexpr auto vertexPositions = parallelogramVertexPositions;
+constexpr auto vertexPositions = cubeVertexPositions;
 }
 
 void setupVertices() {
@@ -75,7 +75,7 @@ void setupVertices() {
 
 void init() {
     renderingProgram = createProgram("ch4.1-vert.glsl", "ch4.1-frag.glsl");
-    camera = {0.0f, 0.0f, 8.0f};
+    camera = {0.0f, 0.0f, 24.0f};
     cubeLoc = {0.0f, -2.0f, 0.0f};
     U = {1.0f, 0.0f, 0.0f, 0.0f};
     V = {0.0f, 1.0f, 0.0f, 0.0f};
@@ -84,6 +84,7 @@ void init() {
 }
 
 void display(GLFWwindow *window) {
+    constexpr auto numObjects = 24;
     const auto currentTime = static_cast<float>(glfwGetTime());
 
     GL_CK_V(glClear(GL_DEPTH_BUFFER_BIT));
@@ -101,23 +102,33 @@ void display(GLFWwindow *window) {
     auto vMat = glm::translate(glm::mat4(1.0F), -camera);
     //auto vMat = glm::mat4{U, V, N, {0.0f, 0.0f, 0.0f, 1.0f}} * glm::translate(glm::mat4(1.0f), -camera);
 
-    auto tMat = glm::translate(glm::mat4(1.0), glm::vec3(std::sin(0.35f*currentTime)*2.0f, std::cos(0.52f*currentTime)*2.0f, std::sin(0.7f*currentTime)*2.0f));
-    auto rMat = glm::rotate(glm::mat4(1.0f), 1.75f*currentTime, glm::vec3(0.0f, 1.0f, 0.0f));
-    rMat = glm::rotate(rMat, 1.75f*currentTime, glm::vec3(1.0f, 0.0f, 0.0f));
-    rMat = glm::rotate(rMat, 1.75f*currentTime, glm::vec3(0.0f, 0.0f, 1.0f));
-    auto mMat = tMat * rMat;
-    auto mvMat = vMat * mMat;
+    for (auto i = 0; i < numObjects; ++i) {
+        const float tf = currentTime + i;
+        auto tMat = glm::translate(
+            glm::mat4(1.0),
+            glm::vec3(
+                std::sin(0.35f*tf)*8.0f,
+                std::cos(0.52f*tf)*8.0f,
+                std::sin(0.70f*tf)*8.0f
+            )
+        );
+        auto rMat = glm::rotate(glm::mat4(1.0f), 1.75f*tf, glm::vec3(0.0f, 1.0f, 0.0f));
+        rMat = glm::rotate(rMat, 1.75f*tf, glm::vec3(1.0f, 0.0f, 0.0f));
+        rMat = glm::rotate(rMat, 1.75f*tf, glm::vec3(0.0f, 0.0f, 1.0f));
+        auto mMat = tMat * rMat;
+        auto mvMat = vMat * mMat;
 
-    GL_CK_V(glUniformMatrix4fv(mvLoc, 1, GL_FALSE, glm::value_ptr(mvMat)));
-    GL_CK_V(glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(pMat)));
+        GL_CK_V(glUniformMatrix4fv(mvLoc, 1, GL_FALSE, glm::value_ptr(mvMat)));
+        GL_CK_V(glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(pMat)));
 
-    GL_CK_V(glBindBuffer(GL_ARRAY_BUFFER, vbo[0]));
-    GL_CK_V(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr));
-    GL_CK_V(glEnableVertexAttribArray(0));
+        GL_CK_V(glBindBuffer(GL_ARRAY_BUFFER, vbo[0]));
+        GL_CK_V(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr));
+        GL_CK_V(glEnableVertexAttribArray(0));
 
-    GL_CK_V(glEnable(GL_DEPTH_TEST));
-    GL_CK_V(glDepthFunc(GL_LEQUAL));
-    GL_CK_V(glDrawArrays(GL_TRIANGLES, 0, vertexPositions.size()/3));
+        GL_CK_V(glEnable(GL_DEPTH_TEST));
+        GL_CK_V(glDepthFunc(GL_LEQUAL));
+        GL_CK_V(glDrawArrays(GL_TRIANGLES, 0, vertexPositions.size()/3));
+    }
 }
 
 int main() {
