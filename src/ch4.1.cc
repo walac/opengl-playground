@@ -1,4 +1,6 @@
 #include "utils.h"
+#include <GLFW/glfw3.h>
+#include <glm/ext/matrix_transform.hpp>
 #include <glm/fwd.hpp>
 #include <iostream>
 #include <cmath>
@@ -17,11 +19,6 @@ glm::vec4 U, V, N;
 GLuint renderingProgram;
 std::array<GLuint, numVAOs> vao;
 std::array<GLuint, numVBOs> vbo;
-
-GLuint mvLoc, projLoc;
-int width, height;
-float aspect;
-glm::mat4 pMat, vMat, mMat, mvMat;
 
 constexpr std::array cubeVertexPositions{
     -1.0F,  1.0F, -1.0F, -1.0F, -1.0F, -1.0F,  1.0F, -1.0F, -1.0F,
@@ -87,20 +84,29 @@ void init() {
 }
 
 void display(GLFWwindow *window) {
+    const auto currentTime = static_cast<float>(glfwGetTime());
+
     GL_CK_V(glClear(GL_DEPTH_BUFFER_BIT));
+    GL_CK_V(glClear(GL_COLOR_BUFFER_BIT));
     GL_CK_V(glUseProgram(renderingProgram));
 
-    mvLoc = GL_CK(glGetUniformLocation(renderingProgram, "mv_matrix"));
-    projLoc = GL_CK(glGetUniformLocation(renderingProgram, "proj_matrix"));
+    auto mvLoc = GL_CK(glGetUniformLocation(renderingProgram, "mv_matrix"));
+    auto projLoc = GL_CK(glGetUniformLocation(renderingProgram, "proj_matrix"));
 
+    int width = 0, height = 0;
     glfwGetFramebufferSize(window, &width, &height);
-    aspect = static_cast<float>(width) / static_cast<float>(height);
-    pMat = glm::perspective(1.0472F /* 60 degrees */, aspect, 0.1F, 1000.0F);
+    auto aspect = static_cast<float>(width) / static_cast<float>(height);
+    auto pMat = glm::perspective(1.0472F /* 60 degrees */, aspect, 0.1F, 1000.0F);
 
-    //vMat = glm::translate(glm::mat4(1.0F), -camera);
-    vMat = glm::mat4{U, V, N, {0.0f, 0.0f, 0.0f, 1.0f}} * glm::translate(glm::mat4(1.0f), -camera);
-    mMat = glm::translate(glm::mat4(1.0F), cubeLoc);
-    mvMat = vMat * mMat;
+    auto vMat = glm::translate(glm::mat4(1.0F), -camera);
+    //auto vMat = glm::mat4{U, V, N, {0.0f, 0.0f, 0.0f, 1.0f}} * glm::translate(glm::mat4(1.0f), -camera);
+
+    auto tMat = glm::translate(glm::mat4(1.0), glm::vec3(std::sin(0.35f*currentTime)*2.0f, std::cos(0.52f*currentTime)*2.0f, std::sin(0.7f*currentTime)*2.0f));
+    auto rMat = glm::rotate(glm::mat4(1.0f), 1.75f*currentTime, glm::vec3(0.0f, 1.0f, 0.0f));
+    rMat = glm::rotate(rMat, 1.75f*currentTime, glm::vec3(1.0f, 0.0f, 0.0f));
+    rMat = glm::rotate(rMat, 1.75f*currentTime, glm::vec3(0.0f, 0.0f, 1.0f));
+    auto mMat = tMat * rMat;
+    auto mvMat = vMat * mMat;
 
     GL_CK_V(glUniformMatrix4fv(mvLoc, 1, GL_FALSE, glm::value_ptr(mvMat)));
     GL_CK_V(glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(pMat)));
