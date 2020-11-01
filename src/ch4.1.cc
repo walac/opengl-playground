@@ -136,11 +136,13 @@ int main() {
     constexpr auto HEIGHT = 600;
     auto window = initGl(WIDTH, HEIGHT, "Chapter 4 = program 1");
     init();
+    FPSCounter fps;
 
     while (0 == glfwWindowShouldClose(window)) {
         display(window);
         glfwSwapBuffers(window);
         glfwPollEvents();
+        fps.count();
     }
 
     glfwDestroyWindow(window);

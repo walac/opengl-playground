@@ -1,8 +1,10 @@
+#include <atomic>
 #include <fstream>
 #include <sstream>
 #include <cstdlib>
 #include <iostream>
 #include <system_error>
+#include <chrono>
 #include <vector>
 #include "utils.h"
 
@@ -59,7 +61,7 @@ GLFWwindow *initGl(int width, int height, std::string_view title) {
         return nullptr;
     }
 
-    glfwSwapInterval(1);
+    glfwSwapInterval(0);
 
     return window;
 }
@@ -125,4 +127,28 @@ GLuint createProgram(std::string_view vertexSourceFile, std::string_view fragmen
     GL_CK_V(glLinkProgram(program));
     checkProgram(program);
     return program;
+}
+
+FPSCounter::FPSCounter()
+    : counter(0)
+    , fut(promise.get_future())
+    , thread(&FPSCounter::fpsPrinter, this)
+{
+}
+
+void FPSCounter::count() {
+    counter.fetch_add(1, std::memory_order_relaxed);
+}
+
+FPSCounter::~FPSCounter() {
+    promise.set_value();
+    thread.join();
+}
+
+void FPSCounter::fpsPrinter() {
+    using namespace std::chrono_literals;
+    while (fut.wait_for(1s) == std::future_status::timeout) {
+        auto count = counter.exchange(0, std::memory_order_acquire);
+        std::cout << count << " fps\n";
+    }
 }

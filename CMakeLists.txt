@@ -39,6 +39,7 @@ endif()
 find_package(glfw3 CONFIG REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(glm CONFIG REQUIRED)
+find_package(Threads REQUIRED)
 
 find_path(GLFW_INCLUDE_DIR GLFW)
 include_directories(${GLFW_INCLUDE_DIR} ${GLM_INCLUDE_DIR})
@@ -47,6 +48,7 @@ set(LIBS
     glfw
     ${GLEW_LIBS}
     OpenGL::GL
+    Threads::Threads
 )
 
 add_executable(ch2 src/utils.cc src/ch2.cc)

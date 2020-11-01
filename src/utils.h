@@ -12,6 +12,9 @@
 #include <string_view>
 #include <algorithm>
 #include <type_traits>
+#include <atomic>
+#include <thread>
+#include <future>
 
 namespace detail
 {
@@ -50,3 +53,18 @@ T checkOpengl(T retVal, std::string_view call, std::string_view file, size_t lin
         call; \
         checkOpengl(#call, __FILE__, __LINE__); \
     } while (0)
+
+class FPSCounter final {
+public:
+    FPSCounter();
+    ~FPSCounter();
+    void count();
+
+private:
+    void fpsPrinter();
+
+    std::atomic_size_t counter;
+    std::promise<void> promise;
+    std::future<void> fut;
+    std::thread thread;
+};

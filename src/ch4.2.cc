@@ -127,10 +127,13 @@ int main() {
     auto window = initGl(WIDTH, HEIGHT, "Chapter 4 = program 1");
     init();
 
+    FPSCounter fpsCounter;
+
     while (0 == glfwWindowShouldClose(window)) {
         display(window);
         glfwSwapBuffers(window);
         glfwPollEvents();
+        fpsCounter.count();
     }
 
     glfwDestroyWindow(window);
