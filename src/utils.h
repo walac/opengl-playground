@@ -33,6 +33,7 @@ void reportOpenglErrorAndQuit(std::string_view call, GLenum err, std::string_vie
 void checkShaderCompile(GLuint shader);
 void checkProgram(GLuint program);
 GLuint createProgram(std::string_view vertexSourceFile, std::string_view fragmentSourceFile);
+GLuint loadImage(std::string_view filename);
 
 inline void
 checkOpengl(std::string_view call, std::string_view file, size_t line) {

@@ -36,6 +36,7 @@ else()
     set(GLEW_LIBS GLEW::GLEW)
 endif()
 
+find_package(soil2 CONFIG REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(glm CONFIG REQUIRED)
@@ -49,6 +50,7 @@ set(LIBS
     ${GLEW_LIBS}
     OpenGL::GL
     Threads::Threads
+    soil2
 )
 
 add_executable(ch2 src/utils.cc src/ch2.cc)
@@ -70,3 +72,9 @@ target_link_libraries(ch4.3 PRIVATE ${LIBS})
 
 add_executable(ch4.4 src/utils.cc src/ch4.4.cc)
 target_link_libraries(ch4.4 PRIVATE ${LIBS})
+
+add_executable(ch5.1 src/utils.cc src/ch5.1.cc)
+target_link_libraries(ch5.1 PRIVATE ${LIBS})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/res DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/ch5.1-vert.glsl DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/ch5.1-frag.glsl DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

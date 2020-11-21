@@ -6,6 +6,7 @@
 #include <system_error>
 #include <chrono>
 #include <vector>
+#include <SOIL2/SOIL2.h>
 #include "utils.h"
 
 constexpr int GL_VERSION_MAJOR = 4;
@@ -80,6 +81,18 @@ std::string readFile(std::string_view filename) {
     std::stringstream ss;
     ss << f.rdbuf();
     return ss.str();
+}
+
+GLuint loadImage(std::string_view filename) {
+    const auto textureId = SOIL_load_OGL_texture(filename.data(),
+        SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+    if (textureId == 0) {
+        throw std::system_error(
+            0,
+            std::iostream_category(),
+            "Could not open file " + std::string(filename)
+        );
+    }
 }
 
 void reportOpenglErrorAndQuit(std::string_view call, GLenum err, std::string_view file, size_t line) {
