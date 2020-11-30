@@ -96,7 +96,7 @@ void setupVertices() {
 
 void init() {
     renderingProgram = createProgram("ch5.1-vert.glsl", "ch5.1-frag.glsl");
-    camera = {0.0f, 0.0f, 24.0f};
+    camera = {2.0f, 0.0f, 8.0f};
     cubeLoc = {0.0f, -2.0f, 0.0f};
     U = {1.0f, 0.0f, 0.0f, 0.0f};
     V = {0.0f, 1.0f, 0.0f, 0.0f};
