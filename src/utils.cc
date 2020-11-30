@@ -93,6 +93,8 @@ GLuint loadImage(std::string_view filename) {
             "Could not open file " + std::string(filename)
         );
     }
+
+    return textureId;
 }
 
 void reportOpenglErrorAndQuit(std::string_view call, GLenum err, std::string_view file, size_t line) {
