@@ -42,7 +42,7 @@ GLFWwindow *initGl(int width, int height, std::string_view title) {
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
-    auto *window = glfwCreateWindow(width, height, title.data(), NULL, NULL);
+    auto *window = glfwCreateWindow(width, height, title.data(), nullptr, nullptr);
 
 #ifdef __APPLE__
     int actualScreenWidth = 0, actualScreenHeight = 0;
