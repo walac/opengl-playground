@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.18.0)
+cmake_minimum_required(VERSION 3.16.0)
 
 project(OpenglPlayground CXX)
 include(cmake/StandardProjectSettings.cmake)
@@ -78,3 +78,8 @@ target_link_libraries(ch5.1 PRIVATE ${LIBS})
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/res DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/ch5.1-vert.glsl DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/ch5.1-frag.glsl DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+add_executable(ch5.2 src/utils.cc src/ch5.2.cc)
+target_link_libraries(ch5.2 PRIVATE ${LIBS})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/ch5.2-vert.glsl DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/ch5.2-frag.glsl DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
